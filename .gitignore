@@ -1,0 +1,20 @@
+[core]
+» excludesfile = ~/.gitignore
+» autocrlf = input
+[user]
+» name = bleuflares
+» email = bleuflares@gmail.com
+[color]
+» ui = auto
+
+[alias]
+» l = log --graph --all --color --oneline --decorate
+» ln = log --graph --pretty=format:'%C(yellow)%h%Creset%C(auto)%d%Creset %s %C(yellow)(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all
+» st = status
+» ci = commit
+» ic = commit
+» co = checkout
+» ll = log -U -n 1
+
+[push]
+» default = simple
