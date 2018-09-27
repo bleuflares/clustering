@@ -4,6 +4,11 @@ from pyspark import SparkConf, SparkContext
 
 ALPHABET_PAIRS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
+def parser(ids):
+    
+    friends = re.split(r'[^\w]+', ids)
+    return friends[0], friends[1:]
+
 def intersect(lists):
   intersection = []
   if len(lists) > 1:
@@ -23,8 +28,11 @@ def match_users(a, b):
 conf = SparkConf()
 sc = SparkContext(conf=conf)
 lines = sc.textFile(sys.argv[1])
-ids = lines.flatMap(lambda l: re.split(r'[^\w]+', l))
-ids.saveAsTextFile(sys.argv[2])
+pairs = lines.map(lambda ids: parser(ids))
+
+pairs.saveAsTextFile(sys.argv[2])
+
+
 #pairs = ids.map(mapper)
 #pair_counts = pairs.reduce(match_users)
 #pair_counts.saveAsTextFile(sys.argv[2])
