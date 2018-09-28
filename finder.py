@@ -2,38 +2,39 @@ import re
 import sys
 from pyspark import SparkConf, SparkContext
 
-ALPHABET_PAIRS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+BUFVAL = -0xffffffff
 
-def parser(ids):
-    
+def parser(ids):    
     friends = re.split(r'[^\w]+', ids)
-    return friends[0], friends[1:]
+    if len(friends) > 1:
+        return friends[0], list(friends[1:])
+def mark_pairs(items):
+    friends = [((items[0], friend), BUFVAL) for friend in items[1]]
+    common_friends = []
+    for friend1 in items[1]:
+        for friend2 in items[1]:
+            if friend1 != friend2:
+                common_friends.append(((friend1, friend2), 1))
+    return friends + common_friends
 
-def intersect(lists):
-  intersection = []
-  if len(lists) > 1:
-    for f in lists[1]:
-      if f in lists[0]:
-        intersection.append(f)
-  return len(intersection)
+def pair_to_list(sorted_pairs):
+    return [sorted_pairs[0][0], sorted_pairs[0][1], sorted_pairs[1]]
 
-def mapper(lst):
-    return (lst[0], lst[1:])
-
-def match_users(a, b):
-    if not a[0] in b[1]:
-        count = intersect([a[1], b[1]])
-        return ((a[0], b[0]), count)
+def write_to_file(content, filename):
+    output = open(filename, 'w')
+    for item in content:
+        output.write("%d\t%d\t%d\n" %(int(item[0][0]), int(item[0][1]), int(item[1])))
+    output.close()
 
 conf = SparkConf()
 sc = SparkContext(conf=conf)
 lines = sc.textFile(sys.argv[1])
-pairs = lines.map(lambda ids: parser(ids))
+line_pairs = lines.map(lambda ids: parser(ids))
+pairs_map = line_pairs.flatMap(mark_pairs)
+map_counts = pairs_map.reduceByKey(lambda a, b: a + b)
+id_pairs = map_counts.filter(lambda (pair, count): count > 0)
+sorted_pairs = id_pairs.filter(lambda (pair, count): pair[0] < pair[1])
+top_10 = sorted_pairs.take(10)
+write_to_file(top_10, sys.argv[2])
 
-pairs.saveAsTextFile(sys.argv[2])
-
-
-#pairs = ids.map(mapper)
-#pair_counts = pairs.reduce(match_users)
-#pair_counts.saveAsTextFile(sys.argv[2])
 sc.stop()
