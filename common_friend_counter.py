@@ -33,6 +33,7 @@ if __name__ == "__main__":
     pairs_map = line_pairs.flatMap(mark_pairs)
     map_counts = pairs_map.reduceByKey(lambda a, b: a + b)
     id_pairs = map_counts.filter(lambda (pair, count): count > 0 and pair[0] < pair[1])
-    top_10 = id_pairs.takeOrdered(10, key=lambda x: -x)
+    top_10 = id_pairs.takeOrdered(10, key=lambda (pair, count): -count)
+    
     write_to_file(top_10, sys.argv[2])
     sc.stop()
