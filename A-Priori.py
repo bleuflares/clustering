@@ -20,7 +20,7 @@ for key in dict_keys:
 	if item_dict[key] >= s:
 		frequent_items.append(key)
 
-candidate_pairs = [0] * len(frequent_items) * len(frequent_items)
+candidate_pairs = [0 for i in range(len(frequent_items) * len(frequent_items))]
 for session in session_list:
 	for item1 in session:
 		for item2 in session:
