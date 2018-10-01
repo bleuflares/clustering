@@ -2,7 +2,7 @@ import re
 import sys
 from pyspark import SparkConf, SparkContext
 
-int PURGE = 0xffffffff
+PURGE = -0xffffffff
 
 def parser(ids):    
     friends = re.split(r'[^\w]+', ids)
@@ -30,5 +30,5 @@ if __name__ == "__main__":
     top_10 = id_pairs.takeOrdered(10, key=lambda (pair, count): -count)
     for item in top_10:
         print("%d\t%d\t%d\n" %(int(item[0][0]), int(item[0][1]), int(item[1])))
-    
+    sc.setLogLevel('WARN')
     sc.stop()

@@ -49,17 +49,8 @@ input_file = open(sys.argv[1], 'r')
 
 documents = []
 shingles = []
+"""
 for line in input_file:
-	"""
-	parsed = parser(line)
-	shingles = []
-	for i in range(len(parsed[1] - 2)):
-		if parsed[1][i] in STOP_WORDS:
-			shingle = parsed[1][i:i + 2]
-			shingles.append(shingle)
-			if not shingle in whole_shingles:
-				whole_shingles.append(shingle)
-	"""
 	parsed = parser2(line)
 	line_shingles = []
 	for i in range(len(parsed[1][0]) - 2):
@@ -68,6 +59,20 @@ for line in input_file:
 		if not shingle in shingles:
 			shingles.append(shingle)
 	documents.append((parsed[0], line_shingles))
+
+"""
+for line in input_file:
+	
+	parsed = parser(line)
+	shingles = []
+	for i in range(len(parsed[1] - 2)):
+		if parsed[1][i] in STOP_WORDS:
+			shingle = parsed[1][i:i + 2]
+			line_shingles.append(shingle)
+			if not shingle in shingles:
+				shingles.append(shingle)
+	documents.append((parsed[0], line_shingles))
+
 
 char_mat = [[0 for i in range(len(documents))] for i in range(len(shingles))]
 
@@ -100,11 +105,10 @@ for i in range(B):
 			if j < k and sig_mat[j][R * i:R * (i + 1)] == sig_mat[k][R * i:R * (i + 1)] and not (j, k) in candidate_pairs:
 				candidate_pairs.append((j, k))
 
-output_file = open(sys.argv[2], 'w')
 for pair in candidate_pairs:
 	count = get_sim(pair)
 	if count >= B * R * S:
-		output_file.write("%s\t%s\t%f\n" %(documents[pair[0]][0], documents[pair[1]][0], count/float(B * R)))	
+		print("%s\t%s\t%f\n" %(documents[pair[0]][0], documents[pair[1]][0], count/float(B * R)))	
 
 input_file.close()
-output_file.close()
+

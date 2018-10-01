@@ -41,13 +41,13 @@ top_10 = []
 for index in top_10_indices:
 	x = frequent_items[index / len(frequent_items)]
 	y = frequent_items[index % len(frequent_items)]
-	top_10.append(sorted((x, y)))
-top_10.sort(key=lambda tup: tup[0], reverse=True)
+	z = candidate_pairs[index]
+	top_10.append((sorted((x, y)), z))
+top_10.sort(key=lambda (tup, count): tup[0], reverse=True)
 
-output_file = open(sys.argv[2], 'w')
-output_file.write("%d\n" %len(frequent_items))
-output_file.write("%d\n" %frequent_pairs_count)
+print("%d\n" %len(frequent_items))
+print("%d\n" %frequent_pairs_count)
 for element in top_10:
-	output_file.write("%s\t%s\n" %(element[0], element[1]))
+	print("%s\t%s\t%d\n" %(element[0][0], element[0][1], element[1]))
 input_file.close()
-output_file.close()
+
