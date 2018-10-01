@@ -45,11 +45,11 @@ def get_sim(pair):
 	return count
 
 
-file = open(sys.argv[1], 'r')
+input_file = open(sys.argv[1], 'r')
 
 documents = []
 shingles = []
-for line in file:
+for line in input_file:
 	"""
 	parsed = parser(line)
 	shingles = []
@@ -71,20 +71,12 @@ for line in file:
 
 char_mat = [[0 for i in range(len(documents))] for i in range(len(shingles))]
 
-print(shingles)
-print(documents)
-print(char_mat)
-
 for i in range(len(shingles)):
 	for j in range(len(documents)):
 		if shingles[i] in documents[j][1]:
-			print(char_mat[i][j])
-			char_mat[i][j].set()
-print(char_mat)
+			char_mat[i][j] = 1
 
 sig_mat = [[INF for i in range(B * R)] for i in range(len(documents))]
-
-print(len(shingles))
 
 c = get_c(len(shingles))
 for k in range(B * R):
@@ -100,8 +92,6 @@ for k in range(B * R):
 			if char_mat[i][j] == 1:
 				sig_mat[j][k] = min(sig_mat[j][k], hash_mat[i])
 
-	print("hash finished!!!")
-
 candidate_pairs = []
 
 for i in range(B):
@@ -109,15 +99,12 @@ for i in range(B):
 		for k in range(len(sig_mat)):
 			if j < k and sig_mat[j][R * i:R * (i + 1)] == sig_mat[k][R * i:R * (i + 1)] and not (j, k) in candidate_pairs:
 				candidate_pairs.append((j, k))
-				print("char pair found!!!")
 
-similar_pairs = []
-
+output_file = open(sys.argv[2], 'w')
 for pair in candidate_pairs:
 	count = get_sim(pair)
-	print(count)
 	if count >= B * R * S:
-		similar_pairs.append(pair)
-		print("sim found!!!")
+		output_file.write("%s\t%s\t%f\n" %(documents[pair[0]][0], documents[pair[1]][0], count/float(B * R * S)))	
 
-print(similar_pairs)
+input_file.close()
+output_file.close()
