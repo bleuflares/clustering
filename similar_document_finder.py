@@ -104,7 +104,7 @@ output_file = open(sys.argv[2], 'w')
 for pair in candidate_pairs:
 	count = get_sim(pair)
 	if count >= B * R * S:
-		output_file.write("%s\t%s\t%f\n" %(documents[pair[0]][0], documents[pair[1]][0], count/float(B * R * S)))	
+		output_file.write("%s\t%s\t%f\n" %(documents[pair[0]][0], documents[pair[1]][0], count/float(B * R)))	
 
 input_file.close()
 output_file.close()

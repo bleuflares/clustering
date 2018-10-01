@@ -2,7 +2,7 @@ import re
 import sys
 from pyspark import SparkConf, SparkContext
 
-PURGE = -0xffffffff
+int PURGE = 0xffffffff
 
 def parser(ids):    
     friends = re.split(r'[^\w]+', ids)
@@ -18,12 +18,6 @@ def mark_pairs(items):
                 common_friends.append(((friend1, friend2), 1))
     return friends + common_friends
 
-def write_to_file(content, filename):
-    output = open(filename, 'w')
-    for item in content:
-        output.write("%d\t%d\t%d\n" %(int(item[0][0]), int(item[0][1]), int(item[1])))
-    output.close()
-
 if __name__ == "__main__":
 
     conf = SparkConf()
@@ -34,6 +28,7 @@ if __name__ == "__main__":
     map_counts = pairs_map.reduceByKey(lambda a, b: a + b)
     id_pairs = map_counts.filter(lambda (pair, count): count > 0 and pair[0] < pair[1])
     top_10 = id_pairs.takeOrdered(10, key=lambda (pair, count): -count)
+    for item in top_10:
+        print("%d\t%d\t%d\n" %(int(item[0][0]), int(item[0][1]), int(item[1])))
     
-    write_to_file(top_10, sys.argv[2])
     sc.stop()
