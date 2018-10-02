@@ -19,7 +19,7 @@ for friend1 in friends:
 		if not friend1[0] in friend2[1]:
 			for a in range(len(friend1[1])):
 				for b in range(len(friend2[1])):
-					if a < b:
+					if a < b and friend1[1][a] == friend2[1][a]:
 						array[a][b] = array[a][b] + 1
 
 for a in range(50000):

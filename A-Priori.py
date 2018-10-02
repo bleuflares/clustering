@@ -1,7 +1,6 @@
 import sys
 
 input_file = open(sys.argv[1], 'r')
-s = 100 #support value
 session_list = []
 item_dict = {}
 for line in input_file:
@@ -14,7 +13,7 @@ for line in input_file:
 			item_dict[item] = dict_item + 1
 	session_list.append(item_list)
 
-s = len(session_list) / 100
+s = len(session_list) / 100 # support value
 
 frequent_items = []
 dict_keys = item_dict.keys()
@@ -34,21 +33,22 @@ for session in session_list:
 frequent_pairs_count = 0
 frequent_pairs = []
 for i in range(len(candidate_pairs)):
-	if candidate_pairs[i] > s:
+	if candidate_pairs[i] >= s:
 		frequent_pairs_count += 1
 
-top_10_indices = sorted(range(len(candidate_pairs)), key=lambda i: candidate_pairs[i])[-10:]
+pair_indices = range(len(candidate_pairs))
 
-top_10 = []
-for index in top_10_indices:
+sorted_pairs = []
+for index in pair_indices:
 	x = frequent_items[index / len(frequent_items)]
 	y = frequent_items[index % len(frequent_items)]
 	z = candidate_pairs[index]
-	top_10.append((sorted((x, y)), z))
-top_10.sort(key=lambda (tup, count): tup[0], reverse=True)
+	sorted_pairs.append(((x, y), z))
+sorted_pairs.sort(key=lambda (tup, count): tup[0])
+top_10 = sorted(sorted_pairs, key=lambda (tup, count): count, reverse=True)[:10]
 
-print("%d\n" %len(frequent_items))
-print("%d\n" %frequent_pairs_count)
+print("%d" %len(frequent_items))
+print("%d" %frequent_pairs_count)
 for element in top_10:
 	print("%s\t%s\t%d" %(element[0][0], element[0][1], element[1]))
 input_file.close()
