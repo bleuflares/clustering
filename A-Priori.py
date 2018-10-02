@@ -14,6 +14,8 @@ for line in input_file:
 			item_dict[item] = dict_item + 1
 	session_list.append(item_list)
 
+s = len(session_list) / 100
+
 frequent_items = []
 dict_keys = item_dict.keys()
 for key in dict_keys:
@@ -48,6 +50,6 @@ top_10.sort(key=lambda (tup, count): tup[0], reverse=True)
 print("%d\n" %len(frequent_items))
 print("%d\n" %frequent_pairs_count)
 for element in top_10:
-	print("%s\t%s\t%d\n" %(element[0][0], element[0][1], element[1]))
+	print("%s\t%s\t%d" %(element[0][0], element[0][1], element[1]))
 input_file.close()
 

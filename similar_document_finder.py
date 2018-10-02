@@ -3,7 +3,7 @@ import re
 import random
 
 INF = 0X7fffffff
-#STOP_WORDS = ['and', 'a', 'the', 'to', 'from', 'this', 'that', 'is', 'are', 'in', 'on', 'by', 'these', 'of', 'it', 'its', 'for']
+STOP_WORDS = ['and', 'a', 'the', 'to', 'from', 'this', 'that', 'is', 'are', 'in', 'on', 'by', 'these', 'of', 'it', 'its', 'for']
 B = 6
 R = 20
 S = 0.91
@@ -49,7 +49,7 @@ input_file = open(sys.argv[1], 'r')
 
 documents = []
 shingles = []
-"""
+
 for line in input_file:
 	parsed = parser2(line)
 	line_shingles = []
@@ -64,15 +64,16 @@ for line in input_file:
 for line in input_file:
 	
 	parsed = parser(line)
+	line_shingles = []
 	shingles = []
-	for i in range(len(parsed[1] - 2)):
-		if parsed[1][i] in STOP_WORDS:
-			shingle = parsed[1][i:i + 2]
-			line_shingles.append(shingle)
-			if not shingle in shingles:
-				shingles.append(shingle)
+	for i in range(len(parsed[1]) - 2):
+		
+		shingle = parsed[1][i:i + 2]
+		line_shingles.append(shingle)
+		if not shingle in shingles:
+			shingles.append(shingle)
 	documents.append((parsed[0], line_shingles))
-
+"""
 
 char_mat = [[0 for i in range(len(documents))] for i in range(len(shingles))]
 
@@ -108,7 +109,7 @@ for i in range(B):
 for pair in candidate_pairs:
 	count = get_sim(pair)
 	if count >= B * R * S:
-		print("%s\t%s\t%f\n" %(documents[pair[0]][0], documents[pair[1]][0], count/float(B * R)))	
+		print("%s\t%s\t%f" %(documents[pair[0]][0], documents[pair[1]][0], count/float(B * R)))	
 
 input_file.close()
 

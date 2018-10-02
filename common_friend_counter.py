@@ -29,6 +29,6 @@ if __name__ == "__main__":
     id_pairs = map_counts.filter(lambda (pair, count): count > 0 and pair[0] < pair[1])
     top_10 = id_pairs.takeOrdered(10, key=lambda (pair, count): -count)
     for item in top_10:
-        print("%d\t%d\t%d\n" %(int(item[0][0]), int(item[0][1]), int(item[1])))
+        print("%d\t%d\t%d" %(int(item[0][0]), int(item[0][1]), int(item[1])))
     sc.setLogLevel('WARN')
     sc.stop()
